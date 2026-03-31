@@ -1,14 +1,16 @@
-# Laravel Forge (static Vite site)
+# Forge deploy
 
-| Field | Value |
-|--------|--------|
-| **Web directory** | `/dist` |
+- **Web directory:** `/dist`
+- Deploy: `npm ci` → `npm run build` → activate release.
 
-Deploy script (between `cd $FORGE_RELEASE_DIRECTORY` and `$ACTIVATE_RELEASE()`):
+## SendGrid (quote form)
 
-```bash
-npm ci
-npm run build
-```
+The form POSTs to **`/api/quote`**. SendGrid runs in **`server/index.mjs`** — the API key stays on the server.
 
-The contact form POSTs to **FormSubmit** (see `CONTACT_FORM_ACTION` in `src/constants/site.ts`). The first time someone submits, FormSubmit emails that inbox to **activate** the form — click the link once.
+1. **Environment** (Forge → Site → Environment): set `SENDGRID_API_KEY`, `SENDGRID_FROM_EMAIL` (verified sender), `SENDGRID_TO_EMAIL` (inbox that receives leads). Same names as `.env.example`.
+
+2. **Daemon:** run the API from `current`, e.g. `pm2 start ecosystem.config.cjs` (see `ecosystem.config.cjs`). After deploy: `pm2 reload ecosystem.config.cjs --update-env`.
+
+3. **Nginx:** proxy `/api` to Node — paste **`deploy/nginx-api-proxy.snippet.conf`** above your SPA `location /` block.
+
+Local: copy `.env.example` → `.env`, fill SendGrid, run **`npm run dev`**.

@@ -1,23 +1,24 @@
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useLayoutEffect, useRef, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import type { FormEvent } from 'react'
+import { Link } from 'react-router-dom'
 import { IMG } from '../content/assets'
 import {
   CONTACT_EMAIL_DISPLAY,
   CONTACT_EMAIL_MAILTO,
-  CONTACT_FORM_ACTION,
   PHONE_DISPLAY,
   PHONE_TEL_HREF,
 } from '../constants/site'
 
 gsap.registerPlugin(ScrollTrigger)
 
+type FormStatus = 'idle' | 'loading' | 'success' | 'error'
+
 export function ContactPage() {
   const rootRef = useRef<HTMLDivElement>(null)
-  const [searchParams] = useSearchParams()
-  const sent = searchParams.get('sent') === '1'
-  const [nextUrl, setNextUrl] = useState('')
+  const [formStatus, setFormStatus] = useState<FormStatus>('idle')
+  const [formError, setFormError] = useState<string | null>(null)
 
   useLayoutEffect(() => {
     const root = rootRef.current
@@ -36,9 +37,44 @@ export function ContactPage() {
     return () => ctx.revert()
   }, [])
 
-  useLayoutEffect(() => {
-    setNextUrl(`${window.location.origin}/contact?sent=1`)
-  }, [])
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    const form = e.currentTarget
+    setFormError(null)
+    setFormStatus('loading')
+
+    const fd = new FormData(form)
+    const payload = {
+      name: String(fd.get('name') ?? '').trim(),
+      email: String(fd.get('email') ?? '').trim(),
+      phone: String(fd.get('phone') ?? '').trim(),
+      year: String(fd.get('year') ?? '').trim(),
+      vehicle: String(fd.get('vehicle') ?? '').trim(),
+      mileage: String(fd.get('mileage') ?? '').trim(),
+    }
+
+    try {
+      const res = await fetch('/api/quote', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+      const data = (await res.json().catch(() => ({}))) as { error?: string }
+      if (!res.ok) {
+        throw new Error(data.error || 'Could not send your request.')
+      }
+      setFormStatus('success')
+      form.reset()
+    } catch (err) {
+      setFormStatus('error')
+      setFormError(
+        err instanceof Error ? err.message : 'Something went wrong. Please call us.',
+      )
+    }
+  }
 
   return (
     <div ref={rootRef}>
@@ -85,25 +121,12 @@ export function ContactPage() {
                     Quote information
                   </h2>
                 </div>
-                <form
-                  className="space-y-8"
-                  action={CONTACT_FORM_ACTION}
-                  method="POST"
-                  noValidate
-                >
-                  <input
-                    type="hidden"
-                    name="_subject"
-                    value="New quote request (website)"
-                  />
-                  {nextUrl ? (
-                    <input type="hidden" name="_next" value={nextUrl} />
-                  ) : null}
+                <form className="space-y-8" onSubmit={onSubmit} noValidate>
                   <div
                     className="rounded-lg border border-outline-variant/25 bg-surface-container px-4 py-3 text-sm"
                     aria-live="polite"
                   >
-                    {sent ? (
+                    {formStatus === 'success' ? (
                       <p className="font-semibold text-tertiary-container">
                         Thank you — we received your request and will follow up
                         shortly. You can also call{' '}
@@ -112,11 +135,17 @@ export function ContactPage() {
                         </a>
                         .
                       </p>
-                    ) : (
+                    ) : null}
+                    {formStatus === 'error' && formError ? (
+                      <p className="text-error" role="alert">
+                        {formError}
+                      </p>
+                    ) : null}
+                    {formStatus === 'idle' || formStatus === 'loading' ? (
                       <p className="text-on-surface-variant">
                         Submit to request a quote. Required: name and email.
                       </p>
-                    )}
+                    ) : null}
                   </div>
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <div className="space-y-2">
@@ -219,9 +248,10 @@ export function ContactPage() {
                   </div>
                   <button
                     type="submit"
-                    className="group flex w-full items-center justify-center gap-3 rounded-full bg-primary px-12 py-5 font-headline text-lg font-bold text-white shadow-xl shadow-primary/20 transition hover:bg-primary/90 md:w-auto"
+                    disabled={formStatus === 'loading'}
+                    className="group flex w-full items-center justify-center gap-3 rounded-full bg-primary px-12 py-5 font-headline text-lg font-bold text-white shadow-xl shadow-primary/20 transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60 md:w-auto"
                   >
-                    Get My Free Quote
+                    {formStatus === 'loading' ? 'Sending…' : 'Get My Free Quote'}
                     <span className="material-symbols-outlined transition-transform group-hover:translate-x-1">
                       arrow_forward
                     </span>

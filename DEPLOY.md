@@ -5,12 +5,12 @@
 
 ## SendGrid (quote form)
 
-The form POSTs to **`/api/quote`**. SendGrid runs in **`server/index.mjs`** — the API key stays on the server.
+The form POSTs to **`/api/quote`**. SendGrid runs in **`server/index.mjs`**.
 
-1. **Environment** (Forge → Site → Environment): set `SENDGRID_API_KEY`, `SENDGRID_FROM_EMAIL` (verified sender), `SENDGRID_TO_EMAIL` (inbox that receives leads). Same names as `.env.example`.
+1. **Environment** (Forge → Site → Environment): `SENDGRID_API_KEY`, `SENDGRID_FROM_EMAIL`, `SENDGRID_TO_EMAIL` (see `.env.example`). Forge links this into each release; PM2 must see these (reload after env changes).
 
-2. **Daemon:** run the API from `current`, e.g. `pm2 start ecosystem.config.cjs` (see `ecosystem.config.cjs`). After deploy: `pm2 reload ecosystem.config.cjs --update-env`.
+2. **Daemon:** from the site `current` directory: `pm2 start ecosystem.config.cjs`. After deploy: `pm2 reload ecosystem.config.cjs --update-env`.
 
-3. **Nginx:** proxy `/api` to Node — paste **`deploy/nginx-api-proxy.snippet.conf`** above your SPA `location /` block.
+3. **Nginx:** see **`deploy/nginx-api-proxy.snippet.conf`** — add **`location /api/`** before **`location /`**, and use **`try_files $uri $uri/ /index.html`** for the SPA (not `=404`).
 
-Local: copy `.env.example` → `.env`, fill SendGrid, run **`npm run dev`**.
+Local: `.env` from `.env.example`, then **`npm run dev`**.

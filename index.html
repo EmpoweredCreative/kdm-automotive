@@ -2,10 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <!-- New filename + query breaks aggressive favicon caching (old /favicon.svg may still be cached as Vite) -->
-    <link rel="icon" type="image/svg+xml" href="/kdm-favicon.svg?v=2" sizes="any" />
-    <link rel="shortcut icon" href="/kdm-favicon.svg?v=2" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/kdm-favicon.svg?v=2" />
+    <!-- Inlined SVG favicon so tab icon does not depend on a separate request (avoids stale CDN/nginx favicon) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%20fill%3D%22none%22%3E%0A%20%20%3Ctitle%3EKDM%20Automotive%3C%2Ftitle%3E%0A%20%20%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%228%22%20fill%3D%22%23002045%22%2F%3E%0A%20%20%3Cpath%0A%20%20%20%20fill%3D%22%23735c00%22%0A%20%20%20%20fill-opacity%3D%220.35%22%0A%20%20%20%20d%3D%22M16%205%2025%209.2v7.3c0%204.9-5.2%209.2-9%2010.5-3.8-1.3-9-5.6-9-10.5V9.2L16%205Z%22%0A%20%20%2F%3E%0A%20%20%3Cpath%0A%20%20%20%20fill%3D%22%23fed65b%22%0A%20%20%20%20d%3D%22M7%2019.5c0-.8.6-1.5%201.4-1.5h1.8l1.3-2.8c.2-.4.6-.7%201.1-.7h7.8c.5%200%20.9.3%201.1.7l1.3%202.8h1.8c.8%200%201.4.7%201.4%201.5v2.5H7v-2.5Z%22%0A%20%20%2F%3E%0A%20%20%3Cpath%20fill%3D%22%23002045%22%20d%3D%22M9%2020.5h14v1H9v-1Z%22%20opacity%3D%22.25%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%2211%22%20cy%3D%2221.5%22%20r%3D%222.6%22%20fill%3D%22%23002045%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%2221%22%20cy%3D%2221.5%22%20r%3D%222.6%22%20fill%3D%22%23002045%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%2211%22%20cy%3D%2221.5%22%20r%3D%221.1%22%20fill%3D%22%2386a0cd%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%2221%22%20cy%3D%2221.5%22%20r%3D%221.1%22%20fill%3D%22%2386a0cd%22%2F%3E%0A%20%20%3Cpath%0A%20%20%20%20fill%3D%22%23002045%22%0A%20%20%20%20fill-opacity%3D%22.2%22%0A%20%20%20%20d%3D%22M13.5%2014.2h5l.9%202h-6.8l.9-2Z%22%0A%20%20%2F%3E%0A%3C%2Fsvg%3E%0A" sizes="any" />
+    <link rel="apple-touch-icon" href="/kdm-favicon.svg?v=3" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"

@@ -33,3 +33,7 @@ The first real submission sends a **one-time activation email** to that inbox �
 - Stop and remove the old process: `pm2 delete kdm-quote-api` (or your daemon name) if it was running.
 
 No env vars are required for the form.
+
+### Spam / abuse (client + FormSubmit)
+
+The contact form uses **HTML5 validation** (required, email, lengths), **max lengths** on fields, a **honeypot** (`_gotcha`), and FormSubmit’s **`_blacklist`** phrase filter — see [`src/constants/site.ts`](src/constants/site.ts) (`FORM_SUBMIT_BLACKLIST`). FormSubmit also applies **server-side** checks on their end. For stronger bot blocking (e.g. reCAPTCHA), see [FormSubmit’s docs](https://formsubmit.co/documentation); that usually requires adding their reCAPTCHA snippet and keys.

@@ -17,3 +17,9 @@ export const CONTACT_FORM_SUBMIT_EMAIL = 'danny@empoweredcreative.co'
 /** FormSubmit — free, no server. First submission emails that address a one-time activation link. */
 export const CONTACT_FORM_ACTION =
   `https://formsubmit.co/${CONTACT_FORM_SUBMIT_EMAIL}` as const
+
+/**
+ * FormSubmit `_blacklist` — submissions containing these phrases are rejected (keep concise; ~20 max).
+ */
+export const FORM_SUBMIT_BLACKLIST =
+  'viagra,cialis,casino,bitcoin,crypto,loan,forex,seo service,backlink,click here,win money,nigerian prince' as const

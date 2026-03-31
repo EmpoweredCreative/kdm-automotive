@@ -7,6 +7,7 @@ import {
   CONTACT_EMAIL_DISPLAY,
   CONTACT_EMAIL_MAILTO,
   CONTACT_FORM_ACTION,
+  FORM_SUBMIT_BLACKLIST,
   PHONE_DISPLAY,
   PHONE_TEL_HREF,
 } from '../constants/site'
@@ -86,19 +87,33 @@ export function ContactPage() {
                   </h2>
                 </div>
                 <form
-                  className="space-y-8"
+                  className="relative space-y-8"
                   action={CONTACT_FORM_ACTION}
                   method="POST"
-                  noValidate
                 >
                   <input
                     type="hidden"
                     name="_subject"
                     value="New quote request (website)"
                   />
+                  <input type="hidden" name="_blacklist" value={FORM_SUBMIT_BLACKLIST} />
                   {nextUrl ? (
                     <input type="hidden" name="_next" value={nextUrl} />
                   ) : null}
+                  {/* Honeypot: bots fill this; FormSubmit drops the submission */}
+                  <div
+                    className="pointer-events-none absolute -left-[9999px] h-0 w-0 overflow-hidden opacity-0"
+                    aria-hidden="true"
+                  >
+                    <label htmlFor="contact-hp">Company website</label>
+                    <input
+                      id="contact-hp"
+                      type="text"
+                      name="_gotcha"
+                      tabIndex={-1}
+                      autoComplete="off"
+                    />
+                  </div>
                   <div
                     className="rounded-lg border border-outline-variant/25 bg-surface-container px-4 py-3 text-sm"
                     aria-live="polite"
@@ -127,6 +142,7 @@ export function ContactPage() {
                         name="name"
                         type="text"
                         required
+                        maxLength={120}
                         autoComplete="name"
                         placeholder="Jane Doe"
                         className="w-full rounded-lg border-none bg-surface-container-high p-4 transition focus:bg-surface-container-lowest focus:ring-0 focus:border-b-2 focus:border-primary"
@@ -140,6 +156,7 @@ export function ContactPage() {
                         name="email"
                         type="email"
                         required
+                        maxLength={254}
                         autoComplete="email"
                         placeholder="jane@example.com"
                         className="w-full rounded-lg border-none bg-surface-container-high p-4 transition focus:bg-surface-container-lowest focus:ring-0 focus:border-b-2 focus:border-primary"
@@ -152,6 +169,8 @@ export function ContactPage() {
                       <input
                         name="phone"
                         type="tel"
+                        maxLength={32}
+                        inputMode="tel"
                         autoComplete="tel"
                         placeholder="443-784-2071"
                         className="w-full rounded-lg border-none bg-surface-container-high p-4 transition focus:bg-surface-container-lowest focus:ring-0 focus:border-b-2 focus:border-primary"
@@ -183,6 +202,7 @@ export function ContactPage() {
                       <input
                         name="vehicle"
                         type="text"
+                        maxLength={120}
                         placeholder="e.g. BMW X5"
                         className="w-full rounded-lg border-none bg-surface-container-high p-4 transition focus:bg-surface-container-lowest focus:ring-0 focus:border-b-2 focus:border-primary"
                       />
@@ -194,6 +214,9 @@ export function ContactPage() {
                       <input
                         name="mileage"
                         type="number"
+                        min={0}
+                        max={9999999}
+                        step={1}
                         placeholder="45,000"
                         className="w-full rounded-lg border-none bg-surface-container-high p-4 transition focus:bg-surface-container-lowest focus:ring-0 focus:border-b-2 focus:border-primary"
                       />

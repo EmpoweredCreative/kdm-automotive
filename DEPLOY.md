@@ -9,9 +9,18 @@
 
 Do **not** use `/public` — that folder only has static assets (favicon, etc.). The built site (including `index.html`) is in **`dist`** after `npm run build`.
 
-## Deployment script (Site → Deploy)
+## Quote form (no nginx, no Node API)
 
-Put this **between** `cd $FORGE_RELEASE_DIRECTORY` and `$ACTIVATE_RELEASE()` so each release installs dependencies and builds `dist`:
+The contact form submits via **Web3Forms** when **`VITE_WEB3FORMS_ACCESS_KEY`** is set at **build time**. No reverse proxy or PM2 is required.
+
+1. Create a free access key at [web3forms.com](https://web3forms.com).
+2. In Forge → **Site → Environment**, add:
+   - `VITE_WEB3FORMS_ACCESS_KEY=your_key_here`
+3. Deploy so `npm run build` runs with that variable available (Forge injects env into the deploy environment).
+
+Submissions are emailed to the address you configure in the Web3Forms dashboard.
+
+## Deployment script (Site → Deploy)
 
 ```bash
 $CREATE_RELEASE()
@@ -39,50 +48,6 @@ location / {
 
 (Edit under Site → Nginx in Forge if needed.)
 
-## Quote form API (SendGrid)
+## Local development
 
-The contact form posts to **`/api/quote`**. The static build in **`dist/`** does not include that route. You must run the Node server and **proxy `/api` in Nginx**; otherwise submissions fail (often with a generic error in the UI).
-
-### 1. Environment variables (Forge → Site → Environment)
-
-Set at least:
-
-- `SENDGRID_API_KEY`
-- `SENDGRID_FROM_EMAIL` (verified sender in SendGrid)
-- `SENDGRID_TO_EMAIL` (where quote emails go)
-
-Optional: `SENDGRID_SUBJECT`, `SENDGRID_SENDER_NAME`, `PORT` (default `8787`).
-
-### 2. Nginx: proxy `/api` to Node
-
-Edit the site config (Forge → Site → Nginx). Add the snippet from **`deploy/nginx-api-proxy.snippet.conf`** *above* your SPA `location / { try_files ... }` block so `/api/*` is handled before the SPA fallback.
-
-Deploy / reload Nginx after saving.
-
-### 3. Run the API with PM2
-
-From the server, using your real site path (the `current` release symlink):
-
-```bash
-cd /home/forge/your-site.com/current
-pm2 start ecosystem.config.cjs
-pm2 save
-pm2 startup   # follow the printed command once so PM2 restarts after reboot
-```
-
-After each deploy, reload the process so it uses the new release:
-
-```bash
-cd /home/forge/your-site.com/current && pm2 reload ecosystem.config.cjs --update-env
-```
-
-You can add that as an extra line at the **end** of the Forge deploy script (after `$ACTIVATE_RELEASE()`).
-
-### 4. Verify
-
-```bash
-curl -s http://127.0.0.1:8787/api/health
-curl -s -o /dev/null -w "%{http_code}" https://your-domain.com/api/health
-```
-
-Expect JSON `{"ok":true}` and HTTP **200**.
+Use **`npm run dev`**. If **`VITE_WEB3FORMS_ACCESS_KEY`** is unset, the form posts to **`/api/quote`** (Express + SendGrid). Copy `.env.example` to `.env` and fill SendGrid vars. See `server/index.mjs`.

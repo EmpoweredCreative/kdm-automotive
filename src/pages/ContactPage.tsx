@@ -10,6 +10,7 @@ import {
   PHONE_DISPLAY,
   PHONE_TEL_HREF,
 } from '../constants/site'
+import { submitQuote } from '../lib/submitQuote'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -54,24 +55,7 @@ export function ContactPage() {
     }
 
     try {
-      const res = await fetch('/api/quote', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify(payload),
-      })
-      const data = (await res.json().catch(() => ({}))) as {
-        error?: string
-      }
-      if (!res.ok) {
-        const fallback =
-          res.status === 404
-            ? 'The quote form is not connected on this server (API missing). Please call or email us — we are happy to help.'
-            : 'Could not send your request.'
-        throw new Error(data.error || fallback)
-      }
+      await submitQuote(payload)
       setFormStatus('success')
       form.reset()
     } catch (err) {

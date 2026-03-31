@@ -10,3 +10,7 @@ export const PHONE_TEL_HREF = 'tel:+14437842071'
 /** General inquiries — Contact page */
 export const CONTACT_EMAIL_DISPLAY = 'kdmwarranty@gmail.com'
 export const CONTACT_EMAIL_MAILTO = 'mailto:kdmwarranty@gmail.com'
+
+/** FormSubmit — free, no server. First submission emails you a one-time activation link. */
+export const CONTACT_FORM_ACTION =
+  `https://formsubmit.co/${CONTACT_EMAIL_DISPLAY}` as const

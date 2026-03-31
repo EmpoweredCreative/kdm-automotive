@@ -11,6 +11,9 @@ export const PHONE_TEL_HREF = 'tel:+14437842071'
 export const CONTACT_EMAIL_DISPLAY = 'kdmwarranty@gmail.com'
 export const CONTACT_EMAIL_MAILTO = 'mailto:kdmwarranty@gmail.com'
 
-/** FormSubmit — free, no server. First submission emails you a one-time activation link. */
+/** Quote form delivery (FormSubmit). Testing: danny@… — switch to business inbox when live. */
+export const CONTACT_FORM_SUBMIT_EMAIL = 'danny@empoweredcreative.co'
+
+/** FormSubmit — free, no server. First submission emails that address a one-time activation link. */
 export const CONTACT_FORM_ACTION =
-  `https://formsubmit.co/${CONTACT_EMAIL_DISPLAY}` as const
+  `https://formsubmit.co/${CONTACT_FORM_SUBMIT_EMAIL}` as const

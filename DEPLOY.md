@@ -4,14 +4,21 @@
 |--------|--------|
 | **Web directory** | `/dist` |
 
-Deploy script (between `cd $FORGE_RELEASE_DIRECTORY` and `$ACTIVATE_RELEASE()`):
-
 ```bash
 npm ci
 npm run build
 ```
 
-Enable Node on the server for the build step. `dist` is produced by `npm run build` and is gitignored.
+## Quote form (Web3Forms)
+
+Submissions use **[Web3Forms](https://web3forms.com)** (`POST` to `api.web3forms.com` from the browser). This avoids relying on **FormSubmit** (`formsubmit.co`), which can show Cloudflare errors when their origin is down.
+
+1. Create a free form at [web3forms.com](https://web3forms.com) and copy the **Access Key**.
+2. Set the **notification email** in the Web3Forms dashboard (e.g. `danny@empoweredcreative.co` or the business inbox).
+3. In Forge → **Site → Environment**, add **`VITE_WEB3FORMS_ACCESS_KEY=your_key`** so it is available when **`npm run build`** runs (Vite embeds `VITE_*` at build time).
+4. Add your **live domain** under Web3Forms domain restrictions if they offer it.
+
+Local: copy `.env.example` to `.env`, set the key, run **`npm run dev`**.
 
 ## SPA (Nginx)
 
@@ -21,19 +28,6 @@ location / {
 }
 ```
 
-## Quote form (FormSubmit)
+### If you previously added `/api/` or PM2
 
-The form POSTs to **FormSubmit** ([formsubmit.co](https://formsubmit.co)) using `CONTACT_FORM_ACTION` in [`src/constants/site.ts`](src/constants/site.ts). **No Node, nginx `/api` proxy, PM2, or SendGrid** on the server.
-
-The first real submission sends a **one-time activation email** to that inbox — click the link once.
-
-### If you added `/api/` or PM2 earlier (cleanup)
-
-- Remove the **`location /api/`** block from Nginx (only `location /` + SPA fallback is needed).
-- Stop and remove the old process: `pm2 delete kdm-quote-api` (or your daemon name) if it was running.
-
-No env vars are required for the form.
-
-### Spam / abuse (client + FormSubmit)
-
-The contact form uses **HTML5 validation** (required, email, lengths), **max lengths** on fields, a **honeypot** (`_gotcha`), and FormSubmit’s **`_blacklist`** phrase filter — see [`src/constants/site.ts`](src/constants/site.ts) (`FORM_SUBMIT_BLACKLIST`). FormSubmit also applies **server-side** checks on their end. For stronger bot blocking (e.g. reCAPTCHA), see [FormSubmit’s docs](https://formsubmit.co/documentation); that usually requires adding their reCAPTCHA snippet and keys.
+You can remove **`location /api/`** and stop **`pm2 delete kdm-quote-api`** — not used for Web3Forms.

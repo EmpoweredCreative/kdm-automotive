@@ -10,11 +10,11 @@ const BIND_HOST = process.env.BIND_HOST || '0.0.0.0'
 app.use(cors({ origin: true }))
 app.use(express.json({ limit: '64kb' }))
 
-app.get('/api/health', (_req, res) => {
+function health(_req, res) {
   res.json({ ok: true })
-})
+}
 
-app.post('/api/quote', async (req, res) => {
+async function quote(req, res) {
   const { name, email, phone, year, vehicle, mileage } = req.body ?? {}
 
   if (!name || !email) {
@@ -65,10 +65,17 @@ app.post('/api/quote', async (req, res) => {
     console.error('SendGrid send error:', error)
     return res.status(502).json({ error: 'Failed to send form. Please try again.' })
   }
-})
+}
+
+app.get('/api/health', health)
+app.get('/health', health)
+
+app.post('/api/quote', quote)
+/** If nginx uses `proxy_pass http://127.0.0.1:8787/;` (trailing slash), the path becomes /quote — handle that too. */
+app.post('/quote', quote)
 
 app.listen(PORT, BIND_HOST, () => {
   console.log(
-    `SendGrid API listening on http://${BIND_HOST}:${PORT} (health: /api/health)`,
+    `SendGrid API listening on http://${BIND_HOST}:${PORT} (health: /api/health or /health)`,
   )
 })

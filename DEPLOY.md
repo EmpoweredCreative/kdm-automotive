@@ -31,3 +31,7 @@ location / {
 ### If you previously added `/api/` or PM2
 
 You can remove **`location /api/`** and stop **`pm2 delete kdm-quote-api`** — not used for Web3Forms.
+
+## Favicon
+
+The app uses **`/kdm-favicon.svg`** (with a cache-bust query in `index.html`) so browsers and CDNs are less likely to keep an old **Vite** tab icon. After deploy, if the tab still shows the wrong icon, **purge Cloudflare cache** (if used) and try a private window or **clear browsing data → Cached images and files** for the site.

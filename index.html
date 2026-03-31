@@ -2,7 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- New filename + query breaks aggressive favicon caching (old /favicon.svg may still be cached as Vite) -->
+    <link rel="icon" type="image/svg+xml" href="/kdm-favicon.svg?v=2" sizes="any" />
+    <link rel="shortcut icon" href="/kdm-favicon.svg?v=2" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/kdm-favicon.svg?v=2" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"

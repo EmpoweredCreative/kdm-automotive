@@ -66,7 +66,11 @@ export function ContactPage() {
         error?: string
       }
       if (!res.ok) {
-        throw new Error(data.error || 'Could not send your request.')
+        const fallback =
+          res.status === 404
+            ? 'The quote form is not connected on this server (API missing). Please call or email us — we are happy to help.'
+            : 'Could not send your request.'
+        throw new Error(data.error || fallback)
       }
       setFormStatus('success')
       form.reset()

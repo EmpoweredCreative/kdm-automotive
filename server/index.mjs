@@ -5,6 +5,7 @@ import sgMail from '@sendgrid/mail'
 
 const app = express()
 const PORT = Number(process.env.PORT || 8787)
+const BIND_HOST = process.env.BIND_HOST || '0.0.0.0'
 
 app.use(cors({ origin: true }))
 app.use(express.json({ limit: '64kb' }))
@@ -66,7 +67,9 @@ app.post('/api/quote', async (req, res) => {
   }
 })
 
-app.listen(PORT, () => {
-  console.log(`SendGrid API listening on http://localhost:${PORT}`)
+app.listen(PORT, BIND_HOST, () => {
+  console.log(
+    `SendGrid API listening on http://${BIND_HOST}:${PORT} (health: /api/health)`,
+  )
 })
 

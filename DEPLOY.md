@@ -41,4 +41,48 @@ location / {
 
 ## Quote form API (SendGrid)
 
-The contact form posts to `/api/quote`. That is served by `server/index.mjs`, not by static files. After the site works, add a **daemon** (or PM2) running `npm run start` with env vars from `.env.example`, and proxy `/api` in Nginx to that process.
+The contact form posts to **`/api/quote`**. The static build in **`dist/`** does not include that route. You must run the Node server and **proxy `/api` in Nginx**; otherwise submissions fail (often with a generic error in the UI).
+
+### 1. Environment variables (Forge → Site → Environment)
+
+Set at least:
+
+- `SENDGRID_API_KEY`
+- `SENDGRID_FROM_EMAIL` (verified sender in SendGrid)
+- `SENDGRID_TO_EMAIL` (where quote emails go)
+
+Optional: `SENDGRID_SUBJECT`, `SENDGRID_SENDER_NAME`, `PORT` (default `8787`).
+
+### 2. Nginx: proxy `/api` to Node
+
+Edit the site config (Forge → Site → Nginx). Add the snippet from **`deploy/nginx-api-proxy.snippet.conf`** *above* your SPA `location / { try_files ... }` block so `/api/*` is handled before the SPA fallback.
+
+Deploy / reload Nginx after saving.
+
+### 3. Run the API with PM2
+
+From the server, using your real site path (the `current` release symlink):
+
+```bash
+cd /home/forge/your-site.com/current
+pm2 start ecosystem.config.cjs
+pm2 save
+pm2 startup   # follow the printed command once so PM2 restarts after reboot
+```
+
+After each deploy, reload the process so it uses the new release:
+
+```bash
+cd /home/forge/your-site.com/current && pm2 reload ecosystem.config.cjs --update-env
+```
+
+You can add that as an extra line at the **end** of the Forge deploy script (after `$ACTIVATE_RELEASE()`).
+
+### 4. Verify
+
+```bash
+curl -s http://127.0.0.1:8787/api/health
+curl -s -o /dev/null -w "%{http_code}" https://your-domain.com/api/health
+```
+
+Expect JSON `{"ok":true}` and HTTP **200**.

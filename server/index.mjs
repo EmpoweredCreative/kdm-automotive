@@ -1,7 +1,13 @@
-import 'dotenv/config'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import dotenv from 'dotenv'
 import cors from 'cors'
 import express from 'express'
 import sgMail from '@sendgrid/mail'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+// Always load .env from project root (next to package.json), not only from process.cwd()
+dotenv.config({ path: path.join(__dirname, '..', '.env') })
 
 const app = express()
 const PORT = Number(process.env.PORT || 8787)
@@ -63,7 +69,8 @@ async function quote(req, res) {
     return res.json({ ok: true })
   } catch (error) {
     console.error('SendGrid send error:', error)
-    return res.status(502).json({ error: 'Failed to send form. Please try again.' })
+    // Use 500 so this is not confused with nginx "upstream down" (502)
+    return res.status(500).json({ error: 'Failed to send form. Please try again.' })
   }
 }
 
@@ -75,7 +82,13 @@ app.post('/api/quote', quote)
 app.post('/quote', quote)
 
 app.listen(PORT, BIND_HOST, () => {
+  const envPath = path.join(__dirname, '..', '.env')
+  const sgOk = Boolean(
+    process.env.SENDGRID_API_KEY &&
+      process.env.SENDGRID_FROM_EMAIL &&
+      process.env.SENDGRID_TO_EMAIL,
+  )
   console.log(
-    `SendGrid API listening on http://${BIND_HOST}:${PORT} (health: /api/health or /health)`,
+    `[quote-api] listening http://${BIND_HOST}:${PORT} | .env: ${envPath} | SendGrid env: ${sgOk ? 'ok' : 'INCOMPLETE (check Forge env + pm2 reload)'}`,
   )
 })

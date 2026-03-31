@@ -18,3 +18,18 @@ The form POSTs to **`/api/quote`** on your domain.
 3. **Nginx:** see **`deploy/nginx-api-proxy.snippet.conf`** — add **`location /api/`** before **`location /`**, and use **`try_files $uri $uri/ /index.html`** for the SPA (not `=404`).
 
 Local: `.env` from `.env.example`, then **`npm run dev`**.
+
+## If the browser shows **502** on `/api/quote`
+
+**502 from nginx** usually means nothing is answering on `127.0.0.1:8787`, or the process crashed.
+
+SSH in and run:
+
+```bash
+curl -s http://127.0.0.1:8787/api/health
+```
+
+- **Connection refused** → start or fix PM2: `cd` to the site `current` folder, then `pm2 start ecosystem.config.cjs` or `pm2 restart kdm-quote-api --update-env`.
+- **`{"ok":true}`** → Node is up; if the site still errors, check `pm2 logs kdm-quote-api` while submitting the form (SendGrid errors appear there).
+
+After changing Forge **Environment** variables, run **`pm2 reload kdm-quote-api --update-env`** (or restart the daemon) so Node picks them up.

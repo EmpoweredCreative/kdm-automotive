@@ -242,8 +242,10 @@ export function PlansPage() {
                 onClick={() => openCoverage('brochure')}
                 className="inline-flex items-center gap-1.5 rounded-full border border-outline-variant/40 bg-surface-container-lowest px-4 py-2 text-xs font-bold uppercase tracking-wider text-primary shadow-sm transition hover:border-primary/40 hover:bg-surface-container"
               >
-                <span className="material-symbols-outlined text-base">image</span>
-                View brochure image
+                <span className="material-symbols-outlined text-base">
+                  picture_as_pdf
+                </span>
+                View brochure
               </button>
               <button
                 type="button"

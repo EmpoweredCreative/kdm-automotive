@@ -155,10 +155,10 @@ export function HomePage() {
                   </div>
                   <div className="mt-8">
                     <span className="font-headline text-4xl font-black text-primary transition-colors group-hover:text-secondary-container">
-                      $3,500
+                      $7k–$12k
                     </span>
                     <p className="mt-1 text-xs font-bold uppercase tracking-widest text-secondary">
-                      Average cost
+                      Typical range
                     </p>
                   </div>
                 </div>
@@ -176,10 +176,10 @@ export function HomePage() {
                   </div>
                   <div className="mt-8">
                     <span className="font-headline text-4xl font-black text-primary transition-colors group-hover:text-secondary-container">
-                      $2,150
+                      $4k–$10k
                     </span>
                     <p className="mt-1 text-xs font-bold uppercase tracking-widest text-secondary">
-                      Average cost
+                      Typical range
                     </p>
                   </div>
                 </div>

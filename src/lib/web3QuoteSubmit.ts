@@ -2,9 +2,7 @@ export type QuotePayload = {
   name: string
   email: string
   phone: string
-  year: string
-  vehicle: string
-  mileage: string
+  vin: string
 }
 
 const WEB3_ENDPOINT = 'https://api.web3forms.com/submit'
@@ -14,9 +12,7 @@ function formatMessage(p: QuotePayload): string {
     'New quote request from website',
     '',
     `Phone: ${p.phone || '(not provided)'}`,
-    `Vehicle year: ${p.year || '(not provided)'}`,
-    `Make/Model: ${p.vehicle || '(not provided)'}`,
-    `Current mileage: ${p.mileage || '(not provided)'}`,
+    `VIN: ${p.vin || '(not provided)'}`,
   ].join('\n')
 }
 

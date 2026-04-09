@@ -118,17 +118,26 @@ export function CoverageDetailModal({
           {tab === 'brochure' ? (
             <div className="space-y-4">
               <p className="text-sm text-on-surface-variant">
-                Official plan comparison artwork. Pinch or scroll to read fine
-                print; structured lists are available in the plan tabs above.
+                Official plan comparison brochure (PDF). Use your browser&apos;s
+                controls to zoom; structured lists are available in the plan tabs
+                above.
               </p>
-              <div className="overflow-hidden rounded-xl border border-outline-variant/20 bg-white shadow-inner">
-                <img
-                  src="/images/first-mile-plans-brochure.png"
-                  alt="KDM Automotive warranty plans brochure comparing Powertrain, Gold, Gold Plus, and Platinum coverage"
-                  className="h-auto w-full object-contain"
-                  loading="lazy"
+              <div className="overflow-hidden rounded-xl border border-outline-variant/20 bg-surface-container-high shadow-inner">
+                <iframe
+                  title="KDM Automotive warranty plans brochure comparing Powertrain, Gold, Gold Plus, and Platinum coverage"
+                  src="/documents/kdm-plans-brochure.pdf"
+                  className="h-[min(70vh,720px)] w-full bg-white"
                 />
               </div>
+              <p className="text-center text-xs text-on-surface-variant">
+                <a
+                  href="/documents/kdm-plans-brochure.pdf"
+                  download
+                  className="font-bold text-primary underline underline-offset-2"
+                >
+                  Download brochure (PDF)
+                </a>
+              </p>
             </div>
           ) : tab === 'exclusions' ? (
             <div className="space-y-4">

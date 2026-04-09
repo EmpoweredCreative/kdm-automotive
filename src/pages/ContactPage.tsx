@@ -65,9 +65,7 @@ export function ContactPage() {
       name: String(fd.get('name') ?? '').trim(),
       email: String(fd.get('email') ?? '').trim(),
       phone: String(fd.get('phone') ?? '').trim(),
-      year: String(fd.get('year') ?? '').trim(),
-      vehicle: String(fd.get('vehicle') ?? '').trim(),
-      mileage: String(fd.get('mileage') ?? '').trim(),
+      vin: String(fd.get('vin') ?? '').trim(),
     }
 
     try {
@@ -167,7 +165,7 @@ export function ContactPage() {
                     ) : null}
                   </div>
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    <div className="space-y-2">
+                    <div className="space-y-2 md:col-span-2">
                       <label className="ml-1 text-xs font-bold uppercase tracking-wider text-primary">
                         Full name
                       </label>
@@ -209,49 +207,19 @@ export function ContactPage() {
                         className="w-full rounded-lg border-none bg-surface-container-high p-4 transition focus:bg-surface-container-lowest focus:ring-0 focus:border-b-2 focus:border-primary"
                       />
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-2 md:col-span-2">
                       <label className="ml-1 text-xs font-bold uppercase tracking-wider text-primary">
-                        Vehicle year
-                      </label>
-                      <select
-                        name="year"
-                        className="w-full rounded-lg border-none bg-surface-container-high p-4 transition focus:bg-surface-container-lowest focus:ring-0 focus:border-b-2 focus:border-primary"
-                        defaultValue="2024"
-                      >
-                        <option>2026</option>
-                        <option>2025</option>
-                        <option>2024</option>
-                        <option>2023</option>
-                        <option>2022</option>
-                        <option>Earlier</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <label className="ml-1 text-xs font-bold uppercase tracking-wider text-primary">
-                        Make / model
+                        VIN #
                       </label>
                       <input
-                        name="vehicle"
+                        name="vin"
                         type="text"
-                        maxLength={120}
-                        placeholder="e.g. BMW X5"
-                        className="w-full rounded-lg border-none bg-surface-container-high p-4 transition focus:bg-surface-container-lowest focus:ring-0 focus:border-b-2 focus:border-primary"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="ml-1 text-xs font-bold uppercase tracking-wider text-primary">
-                        Current mileage
-                      </label>
-                      <input
-                        name="mileage"
-                        type="number"
-                        min={0}
-                        max={9999999}
-                        step={1}
-                        placeholder="45,000"
-                        className="w-full rounded-lg border-none bg-surface-container-high p-4 transition focus:bg-surface-container-lowest focus:ring-0 focus:border-b-2 focus:border-primary"
+                        maxLength={17}
+                        inputMode="text"
+                        autoComplete="off"
+                        spellCheck={false}
+                        placeholder="17-character vehicle identification number"
+                        className="w-full rounded-lg border-none bg-surface-container-high p-4 font-mono uppercase tracking-wider transition focus:bg-surface-container-lowest focus:ring-0 focus:border-b-2 focus:border-primary"
                       />
                     </div>
                   </div>
